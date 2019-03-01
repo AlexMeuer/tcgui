@@ -16,7 +16,9 @@
                         <th>Name</th>
                         <th>Current Value</th>
                         <th>New Value</th>
-                        <th>Variance / Correlation</th>
+                        <th>Variance</th>
+                        <th>New Value</th>
+                        <th>Correlation</th>
                         <th>New Value</th>
                     </tr>
                     <tr>
@@ -30,11 +32,15 @@
                         <td><input type="number" name="Delay" size="5"> ms</td>
                         <td>±{{ rule['delayVariance'] }}</td>
                         <td>±<input type="number" name="DelayVariance" size="5"> ms</td>
+                        <td>{{ rule['delayCorrelation'] }}</td>
+                        <td><input type="number" name="DelayCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Loss:</td>
                         <td>{{ rule['loss'] }}</td>
                         <td><input type="number" name="Loss" size="5"> %</td>
+                        <td class="invisible"></td>
+                        <td class="invisible"></td>
                         <td>{{ rule['lossCorrelation'] }}</td>
                         <td><input type="number" name="LossCorrelation" size="5"> %</td>
                     </tr>
@@ -47,6 +53,8 @@
                         <td>Reorder:</td>
                         <td>{{ rule['reorder'] }}</td>
                         <td><input type="number" name="Reorder" size="5"> %</td>
+                        <td class="invisible"></td>
+                        <td class="invisible"></td>
                         <td>{{ rule['reorderCorrelation'] }}</td>
                         <td><input type="number" name="ReorderCorrelation" size="5"> %</td>
                     </tr>
@@ -67,6 +75,13 @@
 <style>
     th,td {
         text-align: center;
+    }
+    th {
+        background-color: grey;
+        color: white;
+    }
+    .invisible {
+        visibility: hidden;
     }
 </style>
 </body>

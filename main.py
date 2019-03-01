@@ -31,6 +31,7 @@ def main():
 def new_rule(interface):
     delay = request.form['Delay']
     delay_variance = request.form['DelayVariance']
+    delay_correlation = request.form['DelayCorrelation']
     loss = request.form['Loss']
     loss_correlation = request.form['LossCorrelation']
     duplicate = request.form['Duplicate']
@@ -53,6 +54,8 @@ def new_rule(interface):
         command += ' delay %sms' % delay
         if delay_variance != '':
             command += ' %sms' % delay_variance
+            if delay_correlation != '':
+                command += ' %s%%' % delay_correlation
     if loss != '':
         command += ' loss %s%%' % loss
         if loss_correlation != '':
@@ -102,12 +105,14 @@ def parse_rule(split_rule):
             'rate':               None,
             'delay':              None,
             'delayVariance':      None,
+            'delayCorrelation':   None,
             'loss':               None,
             'lossCorrelation':    None,
             'duplicate':          None,
             'reorder':            None,
             'reorderCorrelation': None,
             'corrupt':            None}
+    length = len(split_rule)
     i = 0
     for argument in split_rule:
         if argument == 'dev':
@@ -126,17 +131,20 @@ def parse_rule(split_rule):
             rule['rate'] = split_rule[i + 1].split('Mbit')[0]
         elif argument == 'delay':
             rule['delay'] = split_rule[i + 1]
-            if 'ms' in split_rule[i + 2]:
+            # we must be careful not to reach past the end of the array
+            if length > i + 2 and 'ms' in split_rule[i + 2]:
                 rule['delayVariance'] = split_rule[i + 2]
+                if length > i + 3 and '%' in split_rule[i + 3]:
+                    rule['delayCorrelation'] = split_rule[i + 3]
         elif argument == 'loss':
             rule['loss'] = split_rule[i + 1]
-            if '%' in split_rule[i + 2]:
+            if length > i + 2 and '%' in split_rule[i + 2]:
                 rule['lossCorrelation'] = split_rule[i + 2]
         elif argument == 'duplicate':
             rule['duplicate'] = split_rule[i + 1]
         elif argument == 'reorder':
             rule['reorder'] = split_rule[i + 1]
-            if '%' in split_rule[i + 2]:
+            if length > i + 2 and '%' in split_rule[i + 2]:
                 rule['reorderCorrelation'] = split_rule[i + 2]
         elif argument == 'corrupt':
             rule['corrupt'] = split_rule[i + 1]
